@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a1a22"/><stop offset="1" stop-color="#0b0b0d"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0d472"/><stop offset="1" stop-color="#c79a2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#0b0b0d"/>
+  <rect width="512" height="512" rx="96" fill="url(#bg)" opacity="0.6"/>
+  <!-- skyline -->
+  <g fill="url(#gold)">
+    <rect x="70" y="300" width="44" height="150"/>
+    <rect x="124" y="250" width="50" height="200"/>
+    <rect x="184" y="190" width="60" height="260"/>
+    <rect x="254" y="150" width="54" height="300"/>
+    <rect x="318" y="220" width="50" height="230"/>
+    <rect x="378" y="280" width="44" height="170"/>
+  </g>
+  <!-- fenêtres -->
+  <g fill="#0b0b0d" opacity="0.85">
+    <rect x="196" y="210" width="10" height="14"/><rect x="216" y="210" width="10" height="14"/>
+    <rect x="196" y="240" width="10" height="14"/><rect x="216" y="240" width="10" height="14"/>
+    <rect x="266" y="175" width="10" height="14"/><rect x="286" y="175" width="10" height="14"/>
+    <rect x="266" y="205" width="10" height="14"/><rect x="286" y="205" width="10" height="14"/>
+  </g>
+  <text x="256" y="430" font-family="Arial Black, Arial, sans-serif" font-weight="900"
+        font-size="120" fill="url(#gold)" text-anchor="middle">CJ</text>
+</svg>

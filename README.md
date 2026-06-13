@@ -46,21 +46,45 @@ Après quatre manches, le clan qui contrôle le plus la ville devient le **maît
 - 🚨 **Les Ripoux** — des flics corrompus que tu peux acheter pour fermer les yeux.
 - ⚖️ **Le Procureur douteux** — il peut faire tomber un rival… ou se laisser convaincre.
 
+## 📱 L'application (iPhone / iPad)
+
+Le jeu existe déjà en **prototype jouable** : une application web (PWA) pensée
+**mobile-first**, qui tourne dans Safari sur iPhone et iPad et s'installe sur
+l'écran d'accueil (plein écran, hors-ligne, icône).
+
+- **Modes** : Pass & play (2 à 6 joueurs sur le même appareil) et Solo contre l'automa « La Pègre ».
+- **Le code** est dans [`app/`](app/) — pas de build, pas de dépendance.
+
+### Lancer l'app en local
+```bash
+cd app
+python3 -m http.server 8000   # ou : npx serve
+# puis ouvrir http://localhost:8000 sur le téléphone (même réseau Wi-Fi)
+```
+
+### L'installer sur iPhone / iPad
+Ouvre l'URL dans **Safari** → bouton **Partager** → **Sur l'écran d'accueil**.
+L'app se lance ensuite en plein écran comme une vraie application.
+
+> Plus tard, pour une publication sur l'App Store, on emballera cette même base
+> dans une coque native (Capacitor) sans tout réécrire.
+
 ## État du projet
 
-🚧 **En conception.** On construit le jeu pas à pas.
+🚧 **En conception — prototype jouable disponible.**
 
 - [x] Choix de la mécanique (hybride territoire + placement)
 - [x] Choix du 8ᵉ clan (Albanais)
-- [x] Mode solo validé (à concevoir)
 - [x] Squelette des règles — voir [`docs/01-regles.md`](docs/01-regles.md)
 - [x] Clan gabarit : Mafia Italienne — voir [`docs/02-clans.md`](docs/02-clans.md)
-- [ ] Conception des 7 autres clans
-- [ ] Plateau de NYC (quartiers + connexions)
-- [ ] Deck d'événements
-- [ ] Mode solo (automa)
+- [x] **Application web jouable** (PWA iPhone/iPad) — voir [`app/`](app/)
+- [x] Plateau de NYC (9 quartiers) jouable
+- [x] Mode solo (automa « La Pègre ») — version de base
+- [ ] Pouvoirs **uniques** par clan (pour l'instant les 8 clans partagent les mêmes archétypes)
+- [ ] Deck d'événements (Phase A) dans l'app
+- [ ] Ripoux & Procureur jouables dans l'app
 - [ ] Équilibrage & playtest
-- [ ] Maquettes de cartes (print-and-play)
+- [ ] Illustrations des personnages
 
 ## Documents de design
 

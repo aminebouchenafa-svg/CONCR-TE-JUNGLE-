@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0b0b0d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Concrete Jungle" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-180.svg" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/style.css" />
+  <title>Concrete Jungle</title>
+</head>
+<body>
+  <!-- ÉCRAN TITRE -->
+  <section id="screen-title" class="screen active">
+    <div class="title-wrap">
+      <h1 class="logo">CONCRETE<br><span>JUNGLE</span></h1>
+      <p class="tagline">New York. Huit clans. Une seule ville.</p>
+      <button class="btn-main" data-action="goto-setup">Nouvelle partie</button>
+      <p class="hint">Ajoute à l'écran d'accueil pour jouer comme une app · 1–6 joueurs · 30–60 min</p>
+    </div>
+  </section>
+
+  <!-- ÉCRAN CONFIGURATION -->
+  <section id="screen-setup" class="screen">
+    <header class="bar"><button class="btn-ghost" data-action="goto-title">‹</button><h2>Configuration</h2><span></span></header>
+    <div class="setup-body">
+      <div class="field">
+        <label>Mode</label>
+        <div class="seg" id="mode-seg">
+          <button class="seg-btn active" data-mode="local">Pass &amp; play</button>
+          <button class="seg-btn" data-mode="solo">Solo vs La Pègre</button>
+        </div>
+      </div>
+      <div class="field" id="count-field">
+        <label>Nombre de joueurs</label>
+        <div class="seg" id="count-seg"></div>
+      </div>
+      <div id="player-list" class="player-list"></div>
+      <button class="btn-main" data-action="start-game">Lancer la guerre</button>
+    </div>
+  </section>
+
+  <!-- ÉCRAN JEU -->
+  <section id="screen-game" class="screen">
+    <header id="game-hud" class="hud"></header>
+    <div id="board" class="board"></div>
+    <div id="hand" class="hand"></div>
+    <footer id="actions" class="actions"></footer>
+    <div id="toast" class="toast"></div>
+  </section>
+
+  <!-- OVERLAY FIN DE MANCHE / RÉSULTATS -->
+  <div id="overlay" class="overlay">
+    <div class="overlay-card">
+      <h2 id="overlay-title"></h2>
+      <div id="overlay-body"></div>
+      <button id="overlay-btn" class="btn-main"></button>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+    }
+  </script>
+</body>
+</html>
