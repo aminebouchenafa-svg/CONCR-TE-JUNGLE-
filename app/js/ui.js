@@ -1,12 +1,16 @@
-// Concrete Jungle — contrôleur d'interface (DOM + interactions tactiles).
+// Concrete Jungle — contrôleur d'interface (carte + page de quartier).
 (function () {
   const D = window.CJ_DATA, G = window.CJ_GAME;
   const { DISTRICTS, CLANS } = D;
   const $ = sel => document.querySelector(sel);
   const $$ = sel => Array.from(document.querySelectorAll(sel));
+  const tile = id => state.board.find(t => t.id === id);
+  const distById = id => DISTRICTS.find(d => d.id === id);
 
   let state = null;
-  let selected = null;        // code du membre choisi dans la main
+  let selected = null;          // code du membre choisi
+  let view = "map";             // map | district
+  let currentDistrict = null;   // id du quartier ouvert
   let setup = { mode: "local", count: 2, rows: [] };
 
   function show(id) { $$(".screen").forEach(s => s.classList.toggle("active", s.id === id)); }
@@ -79,9 +83,8 @@
   function startGame() {
     const players = setup.rows.map(r => ({ clanId: r.sel.value, name: r.name.value.trim() || "Joueur", isAI: r.isAI }));
     state = G.createGame(players);
-    selected = null;
-    show("screen-game");
-    startPlacementTurn();
+    selected = null; view = "map"; currentDistrict = null;
+    startTurn();
   }
 
   // ---------- Boucle de tour ----------
@@ -89,29 +92,42 @@
     const pl = state.players[state.current];
     return !state.passed[state.current] && pl.reserve.length > 0;
   }
-  function startPlacementTurn() {
+  function startTurn() {
     if (G.everyonePassed(state)) { endPlacement(); return; }
     if (!currentCanAct()) { G.advanceTurn(state); }
-    selected = null; render(); maybeAI();
+    selected = null; currentDistrict = null; view = "map";
+    show("screen-game"); renderMap(); maybeAI();
   }
   function maybeAI() {
     const pl = state.players[state.current];
     if (pl.isAI && state.phase === "placement") {
-      render();
-      setTimeout(() => { G.aiPlay(state, state.current); proceed(); }, 700);
+      renderMap();
+      setTimeout(() => { G.aiPlay(state, state.current); afterAction(); }, 700);
     }
   }
-  function proceed() {
-    if (state.pending) { render(); return; }
+  // après une action terminée (deploy/pass/cible résolue)
+  function afterAction() {
+    if (state.pending) { renderDistrict(); return; }
     const pl = state.players[state.current];
-    if (pl.extraDeploy && pl.reserve.length > 0) {   // Le Cousin : 2e déploiement gratuit
-      pl.extraDeploy = false; selected = null;
+    if (pl.extraDeploy && pl.reserve.length > 0) {  // Le Cousin : 2e déploiement gratuit
+      pl.extraDeploy = false; selected = null; currentDistrict = null; view = "map";
+      show("screen-game"); renderMap();
       if (!pl.isAI) toast("Le Cousin : déploie un 2ᵉ membre gratuitement !");
-      render(); maybeAI(); return;
+      maybeAI(); return;
     }
     pl.extraDeploy = false;
-    if (G.everyonePassed(state)) { endPlacement(); return; }
-    G.advanceTurn(state); selected = null; render(); maybeAI();
+    G.advanceTurn(state); startTurn();
+  }
+
+  function openDistrict(id) {
+    if (state.players[state.current].isAI) return;
+    currentDistrict = id; view = "district"; selected = null;
+    show("screen-district"); renderDistrict();
+  }
+  function closeDistrict() {
+    if (state.pending) { toast("Résous d'abord l'action en cours."); return; }
+    view = "map"; currentDistrict = null; selected = null;
+    show("screen-game"); renderMap();
   }
 
   function endPlacement() {
@@ -127,7 +143,7 @@
       () => {
         G.endRound(state);
         if (state.phase === "end") showResults();
-        else { closeOverlay(); startPlacementTurn(); }
+        else { closeOverlay(); startTurn(); }
       });
   }
 
@@ -140,9 +156,7 @@
     openOverlay("Maître de la Concrete Jungle", body, "Rejouer", () => { closeOverlay(); buildSetup(); show("screen-setup"); });
   }
 
-  // ---------- RENDU ----------
-  function render() { if (!state) return; renderHUD(); renderBoard(); renderHand(); renderActions(); }
-
+  // ---------- HUD ----------
   function renderHUD() {
     const pl = state.players[state.current];
     const mini = state.players.map(p =>
@@ -151,89 +165,81 @@
       <div class="turn"><span class="pdot" style="background:${pl.color}"></span>${pl.name}${pl.isAI ? " 🤖" : ""}</div>
       <span class="round-chip">Manche ${state.round}/${D.CONFIG.rounds}</span>
       <div class="meta" style="flex-basis:100%;justify-content:space-between">
-        <span>💵 <b>${pl.money}</b> · 🃏 <b>${pl.reserve.length}</b> en réserve</span>
+        <span>💵 <b>${pl.money}</b> · 🃏 <b>${pl.reserve.length}</b></span>
         <span>${mini}</span>
       </div>`;
   }
 
-  function renderBoard() {
+  // ---------- CARTE (plateau) ----------
+  function renderMap() {
+    renderHUD();
     const board = $("#board");
     board.innerHTML = `<div class="board-art" id="board-art"></div>`;
     const art = $("#board-art");
-    const pend = state.pending;
+    const pl = state.players[state.current];
     for (const d of DISTRICTS) {
-      const t = state.board.find(x => x.id === d.id);
+      const t = tile(d.id);
       const ctrl = G.tileControl(state, t);
       const leader = ctrl.leader != null ? state.players[ctrl.leader] : null;
-      const z = document.createElement("div");
-      z.className = "zone" + (d.jewel ? " jewel" : "");
-      z.style.left = d.bx + "%"; z.style.top = d.by + "%";
-      const canPlace = !pend && selected && G.tileHasFreeSlot(state, d.id);
-      if (canPlace) z.classList.add("selectable");
-      z.innerHTML = `
-        <div class="zone-top">
-          <span class="zone-name">${d.jewel ? "👑 " : ""}${d.name}</span>
-          <span class="zone-val">${d.value}★</span>
-        </div>
-        <div class="zone-pawns"></div>
-        <div class="zone-foot">
-          ${leader ? `<img class="zone-flag" src="assets/clans/${leader.clanId}/emblem.png" alt="" onerror="this.remove()">` : ""}
-          <span class="zone-heat">${t.heat ? "🔥" + (t.heat > 1 ? t.heat : "") : ""}</span>
-          ${t.protectedThisRound ? "🛡️" : ""}${t.raidShield ? "🦅" : ""}
-          <span class="zone-slots">${t.pawns.length}/${d.slots}</span>
-        </div>`;
-      const pawnsEl = z.querySelector(".zone-pawns");
-      t.pawns.forEach((p, i) => {
-        const owner = state.players[p.playerIdx];
-        const pe = document.createElement("span");
-        pe.className = "pawn"; pe.style.background = owner.color;
-        pe.innerHTML = `<span class="pawn-icon">${p.icon}</span>` +
-          `<img class="pawn-img" src="assets/clans/${owner.clanId}/emblem.png" alt="" onerror="this.remove()">`;
-        pe.title = `${p.name} — ${p.role}`;
-        let targetable = false;
-        if (pend && pend.type === "kill" && pend.districtId === d.id && p.playerIdx !== pend.playerIdx) targetable = true;
-        if (pend && (pend.type === "move" || pend.type === "buff") && p.playerIdx === pend.playerIdx &&
-            pend.options.some(o => o.from === d.id && o.i === i)) targetable = true;
-        if (targetable) {
-          pe.classList.add("targetable");
-          pe.onclick = (ev) => {
-            ev.stopPropagation();
-            if (pend.type === "kill") G.resolveTarget(state, i);
-            else G.resolveTarget(state, { from: d.id, i });
-            proceed();
-          };
-        }
-        pawnsEl.appendChild(pe);
-      });
-      if (canPlace) {
-        z.onclick = () => {
-          const r = G.deploy(state, state.current, selected, d.id);
-          if (!r.ok) { toast(r.error); return; }
-          selected = null;
-          if (r.pending) { toast(pendingHint(r.pending)); render(); }
-          else proceed();
-        };
-      }
-      art.appendChild(z);
+      const lab = document.createElement("button");
+      lab.className = "map-label" + (d.jewel ? " jewel" : "");
+      lab.style.left = d.bx + "%"; lab.style.top = d.by + "%";
+      lab.innerHTML = `
+        <span class="ml-name">${d.jewel ? "👑 " : ""}${d.name}</span>
+        <span class="ml-meta">
+          ${leader ? `<img src="assets/clans/${leader.clanId}/emblem.png" alt="" onerror="this.remove()">` : ""}
+          ${t.pawns.length ? `<b>${t.pawns.length}/${d.slots}</b>` : ""}
+          ${t.heat ? ` 🔥${t.heat > 1 ? t.heat : ""}` : ""}
+        </span>`;
+      if (!pl.isAI) lab.onclick = () => openDistrict(d.id);
+      art.appendChild(lab);
     }
+    const act = $("#actions"); act.innerHTML = "";
+    if (pl.isAI) { act.innerHTML = `<div class="ai-turn">🤖 ${pl.name} joue…</div>`; return; }
+    act.appendChild(btn("Passer le tour", "", () => { G.pass(state, state.current); afterAction(); }));
   }
 
-  function pendingHint(p) {
-    if (p.type === "kill") return "Choisis un pion adverse à éliminer";
-    if (p.type === "move") return "Choisis un de tes pions à repositionner";
-    if (p.type === "buff") return "Choisis un de tes pions à tatouer (+1 influence)";
-    return "";
+  // ---------- PAGE QUARTIER ----------
+  function renderDistrict() {
+    const d = distById(currentDistrict);
+    const t = tile(currentDistrict);
+    $("#district-title").textContent = (d.jewel ? "👑 " : "") + d.name;
+    $("#district-art").innerHTML = `
+      <img class="district-img" src="assets/districts/${d.code}.jpg" alt=""
+           onerror="if(this.src.endsWith('.jpg')){this.src=this.src.slice(0,-4)+'.png'}else{this.remove()}">
+      <div class="district-art-overlay"><span>${d.name}</span></div>`;
+    const ctrl = G.tileControl(state, t);
+    const leader = ctrl.leader != null ? state.players[ctrl.leader] : null;
+    $("#district-info").innerHTML = `
+      <span>💎 ${d.value} PR</span><span>💵 ${d.revenue}</span>
+      <span>🔥 ${t.heat}</span><span>${t.pawns.length}/${d.slots} places</span>
+      <span>${leader ? "Contrôle " + leader.emoji : "Libre"}</span>
+      ${t.protectedThisRound ? "<span>🛡️ protégé</span>" : ""}${t.raidShield ? "<span>🦅 guet</span>" : ""}`;
+
+    const pe = $("#district-pawns"); pe.innerHTML = "";
+    if (!t.pawns.length) pe.innerHTML = `<div class="empty">Personne ici pour l'instant.</div>`;
+    t.pawns.forEach(p => {
+      const owner = state.players[p.playerIdx];
+      const tok = document.createElement("div"); tok.className = "dpawn";
+      tok.innerHTML = `<span class="pawn" style="background:${owner.color}">
+          <span class="pawn-icon">${p.icon}</span>
+          <img class="pawn-img" src="assets/clans/${owner.clanId}/emblem.png" alt="" onerror="this.remove()"></span>
+        <span class="dpawn-name">${p.name}</span>`;
+      pe.appendChild(tok);
+    });
+
+    renderDistrictHand();
+    renderDistrictActions();
   }
 
-  function renderHand() {
-    const hand = $("#hand"); hand.innerHTML = "";
+  function renderDistrictHand() {
+    const hand = $("#district-hand"); hand.innerHTML = "";
     const pl = state.players[state.current];
-    if (pl.isAI) { hand.innerHTML = `<div class="hand-empty">🤖 La Pègre réfléchit…</div>`; return; }
-    if (state.pending) { hand.innerHTML = `<div class="hand-empty">${pendingHint(state.pending)} (ou renonce ci-dessous)</div>`; return; }
+    if (state.pending) { hand.innerHTML = `<div class="hand-empty">${pendingHint(state.pending)} ↓</div>`; return; }
     if (!pl.reserve.length) { hand.innerHTML = `<div class="hand-empty">Plus personne en réserve. Tu peux passer.</div>`; return; }
     pl.reserve.forEach(m => {
       const c = document.createElement("div");
-      c.className = "card" + (selected === m.code ? " selected" : "");
+      c.className = "card";
       c.innerHTML = `
         <div class="c-banner">
           <img class="c-banner-emblem" src="assets/clans/${pl.clanId}/emblem.png" alt="" onerror="this.remove()">
@@ -248,19 +254,50 @@
         <div class="c-name">${m.name}</div>
         <div class="c-role">${m.role}</div>
         <div class="c-pow"><span class="c-pow-label">Pouvoir</span>${m.desc}</div>`;
-      c.onclick = () => { selected = (selected === m.code) ? null : m.code; render(); };
+      c.onclick = () => deployHere(m.code);
       hand.appendChild(c);
     });
   }
 
-  function renderActions() {
-    const act = $("#actions"); act.innerHTML = "";
-    const pl = state.players[state.current];
-    if (pl.isAI) return;
-    if (state.pending) { act.appendChild(btn("Renoncer au pouvoir", "warn", () => { G.skipPending(state); proceed(); })); return; }
-    if (selected) act.appendChild(btn("Annuler", "", () => { selected = null; render(); }));
-    act.appendChild(btn("Passer", "", () => { G.pass(state, state.current); proceed(); }));
+  function deployHere(code) {
+    const r = G.deploy(state, state.current, code, currentDistrict);
+    if (!r.ok) { toast(r.error); return; }
+    selected = null;
+    if (r.pending) { toast(pendingHint(r.pending)); renderDistrict(); }
+    else afterAction();
   }
+
+  function renderDistrictActions() {
+    const act = $("#district-actions"); act.innerHTML = "";
+    const pend = state.pending;
+    if (pend) {
+      pend.options.forEach(opt => {
+        let label, fn;
+        if (pend.type === "kill") {
+          const pw = tile(pend.districtId).pawns[opt];
+          label = `✖ ${pw.name} ${state.players[pw.playerIdx].emoji}`;
+          fn = () => { G.resolveTarget(state, opt); afterAction(); };
+        } else {
+          const pw = tile(opt.from).pawns[opt.i];
+          const dn = distById(opt.from).name;
+          label = `${pend.type === "buff" ? "🖋️" : "🚗"} ${pw.name} (${dn})`;
+          fn = () => { G.resolveTarget(state, opt); afterAction(); };
+        }
+        act.appendChild(btn(label, "", fn));
+      });
+      act.appendChild(btn("Renoncer", "warn", () => { G.skipPending(state); afterAction(); }));
+      return;
+    }
+    act.appendChild(btn("Passer le tour", "", () => { G.pass(state, state.current); afterAction(); }));
+  }
+
+  function pendingHint(p) {
+    if (p.type === "kill") return "Choisis la cible à éliminer";
+    if (p.type === "move") return "Choisis le pion à faire venir";
+    if (p.type === "buff") return "Choisis le pion à renforcer";
+    return "";
+  }
+
   function btn(label, cls, fn) { const b = document.createElement("button"); b.textContent = label; if (cls) b.className = cls; b.onclick = fn; return b; }
 
   // ---------- Overlay & toast ----------
@@ -281,4 +318,7 @@
     const t = $("#toast"); t.textContent = msg; t.classList.add("show");
     clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 1800);
   }
+
+  // back depuis la page quartier
+  $("#district-back").onclick = () => closeDistrict();
 })();

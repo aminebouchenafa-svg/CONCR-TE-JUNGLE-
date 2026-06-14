@@ -243,3 +243,54 @@ body { display: flex; flex-direction: column; }
   .hud { padding-left: 24px; padding-right: 24px; }
   .overlay-card { max-width: 520px; }
 }
+
+/* ---------- CARTE : noms de quartiers (pas de rectangle) ---------- */
+.map-label {
+  position: absolute; transform: translate(-50%, -50%);
+  background: none; border: none; cursor: pointer; padding: 6px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.map-label:active { transform: translate(-50%, -50%) scale(.94); }
+.map-label .ml-name {
+  font-size: 12px; font-weight: 900; color: #fff; white-space: nowrap;
+  text-shadow: 0 1px 3px #000, 0 0 6px #000, 0 0 10px #000;
+}
+.map-label.jewel .ml-name { color: var(--accent); }
+.map-label .ml-meta { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #fff;
+  text-shadow: 0 1px 2px #000, 0 0 6px #000; }
+.map-label .ml-meta img { width: 18px; height: 18px; object-fit: contain; }
+.ai-turn { width: 100%; text-align: center; color: var(--muted); padding: 6px; }
+
+/* ---------- PAGE QUARTIER ---------- */
+#screen-district { background: #0b0b0d; }
+.district-art {
+  position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 36vh; overflow: hidden;
+  background: #0e0e12 url("../assets/board.png") center/cover; flex: none;
+}
+.district-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.district-art-overlay {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 30px 14px 10px;
+  background: linear-gradient(transparent, rgba(0,0,0,.9));
+}
+.district-art-overlay span { font-size: 24px; font-weight: 900; color: #fff; text-shadow: 0 2px 6px #000; }
+.district-info {
+  display: flex; flex-wrap: wrap; gap: 8px 14px; padding: 10px 14px;
+  background: var(--panel); border-bottom: 1px solid var(--line); font-size: 13px; color: var(--muted);
+}
+.district-pawns {
+  flex: 1; display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 14px;
+  align-content: flex-start; overflow-y: auto;
+}
+.district-pawns .empty { color: var(--muted); font-size: 14px; padding: 10px; }
+.dpawn { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 56px; }
+.dpawn .pawn { width: 36px; height: 36px; border-radius: 9px; font-size: 18px; }
+.dpawn-name { font-size: 9.5px; color: var(--muted); text-align: center; line-height: 1.05; }
+#district-actions { flex-wrap: wrap; }
+
+@media (min-width: 768px) {
+  .map-label .ml-name { font-size: 16px; }
+  .map-label .ml-meta { font-size: 13px; }
+  .map-label .ml-meta img { width: 22px; height: 22px; }
+  .district-art { max-height: 42vh; }
+  .district-art-overlay span { font-size: 30px; }
+}

@@ -4,14 +4,14 @@
 // 8 quartiers calés sur l'image du plateau (bx/by = position en % sur board.png).
 // adj = connexions (Manhattan est le hub central).
 const DISTRICTS = [
-  { id: 0, name: "The Bronx",       value: 2, revenue: 1, slots: 3, bx: 34, by: 26, adj: [1, 3, 4] },
-  { id: 1, name: "Harlem",          value: 2, revenue: 1, slots: 3, bx: 63, by: 24, adj: [0, 2, 4] },
-  { id: 2, name: "Queens",          value: 2, revenue: 1, slots: 3, bx: 85, by: 54, adj: [1, 4, 7] },
-  { id: 3, name: "Hell's Kitchen",  value: 3, revenue: 2, slots: 4, bx: 16, by: 50, adj: [0, 4, 5] },
-  { id: 4, name: "Manhattan",       value: 4, revenue: 3, slots: 4, bx: 48, by: 56, jewel: true, adj: [0, 1, 2, 3, 5, 6, 7] },
-  { id: 5, name: "Brooklyn",        value: 3, revenue: 2, slots: 4, bx: 16, by: 80, adj: [3, 4, 6] },
-  { id: 6, name: "Little Italy",    value: 2, revenue: 1, slots: 3, bx: 45, by: 85, adj: [4, 5, 7] },
-  { id: 7, name: "Lower East Side", value: 2, revenue: 1, slots: 3, bx: 72, by: 75, adj: [2, 4, 6] },
+  { id: 0, code: "bronx",        name: "The Bronx",       value: 2, revenue: 1, slots: 3, bx: 34, by: 26, adj: [1, 3, 4] },
+  { id: 1, code: "harlem",       name: "Harlem",          value: 2, revenue: 1, slots: 3, bx: 63, by: 24, adj: [0, 2, 4] },
+  { id: 2, code: "queens",       name: "Queens",          value: 2, revenue: 1, slots: 3, bx: 85, by: 54, adj: [1, 4, 7] },
+  { id: 3, code: "hellskitchen", name: "Hell's Kitchen",  value: 3, revenue: 2, slots: 4, bx: 16, by: 50, adj: [0, 4, 5] },
+  { id: 4, code: "manhattan",    name: "Manhattan",       value: 4, revenue: 3, slots: 4, bx: 48, by: 56, jewel: true, adj: [0, 1, 2, 3, 5, 6, 7] },
+  { id: 5, code: "brooklyn",     name: "Brooklyn",        value: 3, revenue: 2, slots: 4, bx: 16, by: 80, adj: [3, 4, 6] },
+  { id: 6, code: "littleitaly",  name: "Little Italy",    value: 2, revenue: 1, slots: 3, bx: 45, by: 85, adj: [4, 5, 7] },
+  { id: 7, code: "les",          name: "Lower East Side", value: 2, revenue: 1, slots: 3, bx: 72, by: 75, adj: [2, 4, 6] },
 ];
 
 // m(code,name,role,inf,icon,power,desc) — fabrique un membre

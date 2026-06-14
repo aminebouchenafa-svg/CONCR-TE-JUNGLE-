@@ -44,14 +44,28 @@
     </div>
   </section>
 
-  <!-- ÉCRAN JEU -->
+  <!-- ÉCRAN PLATEAU (la carte) -->
   <section id="screen-game" class="screen">
     <header id="game-hud" class="hud"></header>
     <div id="board" class="board"></div>
-    <div id="hand" class="hand"></div>
     <footer id="actions" class="actions"></footer>
-    <div id="toast" class="toast"></div>
   </section>
+
+  <!-- ÉCRAN QUARTIER (on y place les pions) -->
+  <section id="screen-district" class="screen">
+    <header class="bar">
+      <button class="btn-ghost" id="district-back">‹ Plateau</button>
+      <h2 id="district-title"></h2>
+      <span style="width:64px"></span>
+    </header>
+    <div id="district-art" class="district-art"></div>
+    <div id="district-info" class="district-info"></div>
+    <div id="district-pawns" class="district-pawns"></div>
+    <div id="district-hand" class="hand"></div>
+    <footer id="district-actions" class="actions"></footer>
+  </section>
+
+  <div id="toast" class="toast"></div>
 
   <!-- OVERLAY FIN DE MANCHE / RÉSULTATS -->
   <div id="overlay" class="overlay">
