@@ -169,7 +169,7 @@
       const leader = ctrl.leader != null ? state.players[ctrl.leader] : null;
       el.innerHTML = `
         <div class="tile-head">
-          <span class="tile-name">${d.name}${t.protectedThisRound ? " 🛡️" : ""}${t.raidShield ? " 🦅" : ""}</span>
+          <span class="tile-name">${d.jewel ? "👑 " : ""}${d.name}${t.protectedThisRound ? " 🛡️" : ""}${t.raidShield ? " 🦅" : ""}</span>
           <span class="tile-val">${d.value}★ ${d.revenue}$</span>
         </div>
         <div class="tile-heat">${t.heat ? "🔥".repeat(Math.min(t.heat, 5)) + (t.heat > 5 ? t.heat : "") : ""}</div>

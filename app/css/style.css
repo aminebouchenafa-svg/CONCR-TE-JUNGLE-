@@ -102,17 +102,29 @@ body { display: flex; flex-direction: column; }
 .hud .round-chip { font-size: 12px; background: var(--panel-2); border: 1px solid var(--line); padding: 4px 10px; border-radius: 20px; }
 
 /* ---------- PLATEAU ---------- */
+#screen-game {
+  background:
+    linear-gradient(rgba(11,11,13,.90), rgba(11,11,13,.94)),
+    url("../assets/board.png") center/cover no-repeat fixed;
+}
 .board {
-  flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
-  padding: 8px; overflow-y: auto; align-content: start;
+  flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  padding: 10px; overflow-y: auto; align-content: start;
+  width: 100%; max-width: 760px; margin: 0 auto;
 }
 .tile {
-  background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
-  padding: 7px; min-height: 92px; display: flex; flex-direction: column; cursor: pointer;
-  position: relative; transition: border-color .1s, box-shadow .1s;
+  background: linear-gradient(160deg, rgba(32,30,24,.92), rgba(16,16,20,.92));
+  border: 1px solid #4a3f1e; border-radius: 14px;
+  padding: 8px; min-height: 104px; display: flex; flex-direction: column; cursor: pointer;
+  position: relative; transition: border-color .1s, box-shadow .1s, transform .1s;
+  box-shadow: 0 2px 6px rgba(0,0,0,.5);
 }
-.tile.jewel { border-color: var(--accent); }
-.tile.selectable { box-shadow: 0 0 0 2px var(--accent) inset; }
+.tile.jewel {
+  border-color: var(--accent);
+  background: linear-gradient(160deg, rgba(60,48,18,.95), rgba(26,22,10,.95));
+  box-shadow: 0 0 16px rgba(212,175,55,.35), 0 2px 6px rgba(0,0,0,.5);
+}
+.tile.selectable { box-shadow: 0 0 0 2px var(--accent) inset; transform: translateY(-2px); }
 .tile.targetable { box-shadow: 0 0 0 2px var(--danger) inset; }
 .tile-head { display: flex; justify-content: space-between; align-items: baseline; }
 .tile-name { font-size: 12px; font-weight: 700; line-height: 1.1; }
@@ -206,3 +218,22 @@ body { display: flex; flex-direction: column; }
 #overlay-body .srow b { margin-left: auto; color: var(--accent); }
 #overlay-body .winner { font-size: 16px; color: var(--accent); font-weight: 800; margin: 8px 0; }
 #overlay-btn { margin-top: 16px; }
+
+/* ---------- iPad / grands écrans ---------- */
+@media (min-width: 768px) {
+  .tile { min-height: 150px; border-radius: 18px; padding: 12px; }
+  .tile-name { font-size: 16px; }
+  .tile-val { font-size: 14px; }
+  .tile-heat { font-size: 15px; }
+  .pawn { width: 30px; height: 30px; font-size: 16px; border-radius: 8px; }
+  .board { gap: 12px; padding: 16px; max-width: 860px; }
+  .hand { justify-content: safe center; padding: 12px; gap: 12px; }
+  .card { width: 190px; }
+  .card .c-media { height: 168px; }
+  .card .c-name { font-size: 16px; }
+  .card .c-role { font-size: 12px; }
+  .card .c-pow { font-size: 12.5px; }
+  .actions { max-width: 760px; margin: 0 auto; width: 100%; }
+  .hud { padding-left: 24px; padding-right: 24px; }
+  .overlay-card { max-width: 520px; }
+}
