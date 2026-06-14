@@ -212,7 +212,8 @@
         const pe = document.createElement("span");
         pe.className = "pawn";
         pe.style.background = pl.color;
-        pe.textContent = ROLES[p.role].icon;
+        pe.innerHTML = `<span class="pawn-icon">${ROLES[p.role].icon}</span>` +
+          `<img class="pawn-img" src="assets/clans/${pl.clanId}/emblem.png" alt="" onerror="this.remove()">`;
         pe.title = p.name;
         // ciblage
         let targetable = false;
@@ -263,7 +264,10 @@
       c.className = "card" + (selectedRole === m.role ? " selected" : "");
       c.innerHTML = `
         <span class="c-inf">${role.influence}★</span>
-        <div class="c-icon">${role.icon}</div>
+        <div class="c-media">
+          <span class="c-icon">${role.icon}</span>
+          <img class="c-portrait" src="assets/clans/${pl.clanId}/${m.role}.jpg" alt="" onerror="this.remove()">
+        </div>
         <div class="c-name">${m.name}</div>
         <div class="c-role">${role.label}</div>
         <div class="c-desc">${role.desc}</div>`;
