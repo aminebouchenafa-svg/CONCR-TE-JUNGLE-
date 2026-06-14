@@ -234,10 +234,10 @@
           <img class="c-portrait" src="assets/clans/${pl.clanId}/${m.code}.jpg" alt=""
                onerror="if(this.src.endsWith('.jpg')){this.src=this.src.slice(0,-4)+'.png'}else{this.remove()}">
           <span class="c-inf">${m.inf}★</span>
-          <span class="c-name-banner">${m.name}</span>
         </div>
+        <div class="c-name">${m.name}</div>
         <div class="c-role">${m.role}</div>
-        <div class="c-desc">${m.desc}</div>`;
+        <div class="c-pow"><span class="c-pow-label">Pouvoir</span>${m.desc}</div>`;
       c.onclick = () => { selected = (selected === m.code) ? null : m.code; render(); };
       hand.appendChild(c);
     });

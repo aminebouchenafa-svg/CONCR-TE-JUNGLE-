@@ -136,16 +136,17 @@ body { display: flex; flex-direction: column; }
   background: var(--panel); border-top: 1px solid var(--line); -webkit-overflow-scrolling: touch;
 }
 .card {
-  flex: none; width: 132px; cursor: pointer; position: relative;
+  flex: none; width: 158px; cursor: pointer; position: relative;
   background: linear-gradient(160deg, #23211a, #141417);
-  border: 1px solid #4a3f1e; border-radius: 12px; padding: 6px;
+  border: 1px solid #4a3f1e; border-radius: 12px; padding: 7px;
   box-shadow: 0 2px 6px rgba(0,0,0,.5);
+  display: flex; flex-direction: column;
 }
 .card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent), 0 4px 12px rgba(212,175,55,.3); transform: translateY(-3px); }
 .card .c-media {
-  position: relative; height: 150px; border-radius: 8px; overflow: hidden;
+  position: relative; height: 132px; border-radius: 8px; overflow: hidden;
   background: #0e0e12; display: flex; align-items: center; justify-content: center;
-  border: 1px solid #3a3320;
+  border: 1px solid #3a3320; flex: none;
 }
 .card .c-icon { font-size: 40px; color: #3a3a44; }
 .card .c-portrait { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -153,13 +154,12 @@ body { display: flex; flex-direction: column; }
   position: absolute; top: 5px; right: 5px; font-size: 12px; font-weight: 800;
   color: #1a1400; background: var(--accent); border-radius: 8px; padding: 1px 6px; z-index: 2;
 }
-.card .c-name-banner {
-  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-  font-size: 12px; font-weight: 800; color: #fff; text-align: center; padding: 12px 4px 4px;
-  background: linear-gradient(transparent, rgba(0,0,0,.9)); text-shadow: 0 1px 2px #000;
-}
-.card .c-role { font-size: 10px; color: var(--accent); text-align: center; margin: 4px 0 2px; text-transform: uppercase; letter-spacing: .5px; }
-.card .c-desc { font-size: 9.5px; color: var(--muted); line-height: 1.3; }
+.card .c-name { font-size: 14px; font-weight: 800; color: #fff; text-align: center; margin: 6px 0 1px; line-height: 1.1; }
+.card .c-role { font-size: 11px; color: var(--accent); text-align: center; margin-bottom: 5px; text-transform: uppercase; letter-spacing: .5px; }
+.card .c-pow { font-size: 11px; color: #cfcfd6; line-height: 1.35;
+  background: #00000033; border-radius: 6px; padding: 5px 6px; }
+.card .c-pow-label { display: block; font-size: 8.5px; letter-spacing: 1px; color: var(--accent);
+  text-transform: uppercase; margin-bottom: 2px; opacity: .85; }
 .hand-empty { color: var(--muted); font-size: 13px; padding: 16px; text-align: center; width: 100%; }
 
 /* ---------- ACTIONS ---------- */
