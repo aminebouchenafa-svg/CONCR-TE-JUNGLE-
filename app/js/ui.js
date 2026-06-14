@@ -234,6 +234,7 @@
           <img class="c-portrait" src="assets/clans/${pl.clanId}/${m.code}.jpg" alt=""
                onerror="if(this.src.endsWith('.jpg')){this.src=this.src.slice(0,-4)+'.png'}else{this.remove()}">
           <span class="c-inf">${m.inf}★</span>
+          <img class="c-emblem" src="assets/clans/${pl.clanId}/emblem.png" alt="" onerror="this.remove()">
         </div>
         <div class="c-name">${m.name}</div>
         <div class="c-role">${m.role}</div>
