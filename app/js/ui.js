@@ -263,12 +263,13 @@
       const c = document.createElement("div");
       c.className = "card" + (selectedRole === m.role ? " selected" : "");
       c.innerHTML = `
-        <span class="c-inf">${role.influence}★</span>
         <div class="c-media">
           <span class="c-icon">${role.icon}</span>
-          <img class="c-portrait" src="assets/clans/${pl.clanId}/${m.role}.jpg" alt="" onerror="this.remove()">
+          <img class="c-portrait" src="assets/clans/${pl.clanId}/${m.role}.jpg" alt=""
+               onerror="if(this.src.endsWith('.jpg')){this.src=this.src.slice(0,-4)+'.png'}else{this.remove()}">
+          <span class="c-inf">${role.influence}★</span>
+          <span class="c-name-banner">${m.name}</span>
         </div>
-        <div class="c-name">${m.name}</div>
         <div class="c-role">${role.label}</div>
         <div class="c-desc">${role.desc}</div>`;
       c.onclick = () => { selectedRole = (selectedRole === m.role) ? null : m.role; render(); };
