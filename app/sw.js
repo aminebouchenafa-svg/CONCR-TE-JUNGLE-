@@ -1,5 +1,5 @@
 // Concrete Jungle — service worker (réseau d'abord, cache en secours hors-ligne)
-const CACHE = "cj-v2";
+const CACHE = "cj-v3";
 const ASSETS = [
   "./",
   "./index.html",
@@ -24,15 +24,17 @@ self.addEventListener("activate", (e) => {
   );
 });
 
-// Réseau d'abord : on récupère toujours la dernière version quand on est en ligne,
-// et on retombe sur le cache uniquement hors-ligne.
+// Images (/assets/) : cache d'abord (rapide, elles changent peu).
+// Code & pages : réseau d'abord (toujours la dernière version), cache en secours hors-ligne.
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
-  e.respondWith(
-    fetch(e.request).then(res => {
-      const copy = res.clone();
-      caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
-      return res;
-    }).catch(() => caches.match(e.request).then(hit => hit || caches.match("./index.html")))
-  );
+  const cacheThenNet = req => caches.match(req).then(hit => hit || fetch(req).then(res => {
+    const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+    return res;
+  }));
+  const netThenCache = req => fetch(req).then(res => {
+    const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+    return res;
+  }).catch(() => caches.match(req).then(hit => hit || caches.match("./index.html")));
+  e.respondWith(e.request.url.includes("/assets/") ? cacheThenNet(e.request) : netThenCache(e.request));
 });

@@ -110,7 +110,7 @@ body { display: flex; flex-direction: column; }
 /* on joue directement sur l'image du plateau */
 .board-art {
   position: relative; width: 100%; max-width: 860px; aspect-ratio: 1408 / 768;
-  background: url("../assets/board.png") center/contain no-repeat; margin: auto;
+  background: url("../assets/board.jpg") center/contain no-repeat; margin: auto;
 }
 .zone {
   position: absolute; transform: translate(-50%, -50%);
