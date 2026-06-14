@@ -157,26 +157,32 @@
   }
 
   function renderBoard() {
-    const board = $("#board"); board.innerHTML = "";
+    const board = $("#board");
+    board.innerHTML = `<div class="board-art" id="board-art"></div>`;
+    const art = $("#board-art");
     const pend = state.pending;
     for (const d of DISTRICTS) {
       const t = state.board.find(x => x.id === d.id);
       const ctrl = G.tileControl(state, t);
-      const el = document.createElement("div");
-      el.className = "tile" + (d.jewel ? " jewel" : "");
-      const canPlace = !pend && selected && G.tileHasFreeSlot(state, d.id);
-      if (canPlace) el.classList.add("selectable");
       const leader = ctrl.leader != null ? state.players[ctrl.leader] : null;
-      el.innerHTML = `
-        <div class="tile-head">
-          <span class="tile-name">${d.jewel ? "👑 " : ""}${d.name}${t.protectedThisRound ? " 🛡️" : ""}${t.raidShield ? " 🦅" : ""}</span>
-          <span class="tile-val">${d.value}★ ${d.revenue}$</span>
+      const z = document.createElement("div");
+      z.className = "zone" + (d.jewel ? " jewel" : "");
+      z.style.left = d.bx + "%"; z.style.top = d.by + "%";
+      const canPlace = !pend && selected && G.tileHasFreeSlot(state, d.id);
+      if (canPlace) z.classList.add("selectable");
+      z.innerHTML = `
+        <div class="zone-top">
+          <span class="zone-name">${d.jewel ? "👑 " : ""}${d.name}</span>
+          <span class="zone-val">${d.value}★</span>
         </div>
-        <div class="tile-heat">${t.heat ? "🔥".repeat(Math.min(t.heat, 5)) + (t.heat > 5 ? t.heat : "") : ""}</div>
-        ${leader ? `<span class="tile-leader" style="color:${leader.color}">${leader.emoji}</span>` : ""}
-        <div class="pawns"></div>
-        <span class="tile-slots">${t.pawns.length}/${d.slots}</span>`;
-      const pawnsEl = el.querySelector(".pawns");
+        <div class="zone-pawns"></div>
+        <div class="zone-foot">
+          ${leader ? `<img class="zone-flag" src="assets/clans/${leader.clanId}/emblem.png" alt="" onerror="this.remove()">` : ""}
+          <span class="zone-heat">${t.heat ? "🔥" + (t.heat > 1 ? t.heat : "") : ""}</span>
+          ${t.protectedThisRound ? "🛡️" : ""}${t.raidShield ? "🦅" : ""}
+          <span class="zone-slots">${t.pawns.length}/${d.slots}</span>
+        </div>`;
+      const pawnsEl = z.querySelector(".zone-pawns");
       t.pawns.forEach((p, i) => {
         const owner = state.players[p.playerIdx];
         const pe = document.createElement("span");
@@ -200,7 +206,7 @@
         pawnsEl.appendChild(pe);
       });
       if (canPlace) {
-        el.onclick = () => {
+        z.onclick = () => {
           const r = G.deploy(state, state.current, selected, d.id);
           if (!r.ok) { toast(r.error); return; }
           selected = null;
@@ -208,7 +214,7 @@
           else proceed();
         };
       }
-      board.appendChild(el);
+      art.appendChild(z);
     }
   }
 
@@ -229,12 +235,15 @@
       const c = document.createElement("div");
       c.className = "card" + (selected === m.code ? " selected" : "");
       c.innerHTML = `
+        <div class="c-banner">
+          <img class="c-banner-emblem" src="assets/clans/${pl.clanId}/emblem.png" alt="" onerror="this.remove()">
+          <span>${pl.clanName}</span>
+        </div>
         <div class="c-media">
           <span class="c-icon">${m.icon}</span>
           <img class="c-portrait" src="assets/clans/${pl.clanId}/${m.code}.jpg" alt=""
                onerror="if(this.src.endsWith('.jpg')){this.src=this.src.slice(0,-4)+'.png'}else{this.remove()}">
           <span class="c-inf">${m.inf}★</span>
-          <img class="c-emblem" src="assets/clans/${pl.clanId}/emblem.png" alt="" onerror="this.remove()">
         </div>
         <div class="c-name">${m.name}</div>
         <div class="c-role">${m.role}</div>

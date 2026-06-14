@@ -1,26 +1,18 @@
 // Concrete Jungle — données du jeu (v0.2 : rosters asymétriques)
 // Chaque clan a ses 7 personnages uniques (rôle + pouvoir propres).
 
+// 8 quartiers calés sur l'image du plateau (bx/by = position en % sur board.png).
+// adj = connexions (Manhattan est le hub central).
 const DISTRICTS = [
-  { id: 0, name: "The Bronx",        value: 2, revenue: 1, slots: 4, col: 0, row: 0 },
-  { id: 1, name: "Harlem",           value: 2, revenue: 1, slots: 3, col: 1, row: 0 },
-  { id: 2, name: "Queens",           value: 2, revenue: 1, slots: 3, col: 2, row: 0 },
-  { id: 3, name: "Hell's Kitchen",   value: 3, revenue: 2, slots: 4, col: 0, row: 1 },
-  { id: 4, name: "Manhattan",        value: 4, revenue: 3, slots: 4, col: 1, row: 1, jewel: true },
-  { id: 5, name: "Brooklyn",         value: 3, revenue: 2, slots: 4, col: 2, row: 1 },
-  { id: 6, name: "Little Italy",     value: 2, revenue: 1, slots: 3, col: 0, row: 2 },
-  { id: 7, name: "Chinatown",        value: 2, revenue: 1, slots: 3, col: 1, row: 2 },
-  { id: 8, name: "Lower East Side",  value: 2, revenue: 1, slots: 3, col: 2, row: 2 },
+  { id: 0, name: "The Bronx",       value: 2, revenue: 1, slots: 3, bx: 34, by: 26, adj: [1, 3, 4] },
+  { id: 1, name: "Harlem",          value: 2, revenue: 1, slots: 3, bx: 63, by: 24, adj: [0, 2, 4] },
+  { id: 2, name: "Queens",          value: 2, revenue: 1, slots: 3, bx: 85, by: 54, adj: [1, 4, 7] },
+  { id: 3, name: "Hell's Kitchen",  value: 3, revenue: 2, slots: 4, bx: 16, by: 50, adj: [0, 4, 5] },
+  { id: 4, name: "Manhattan",       value: 4, revenue: 3, slots: 4, bx: 48, by: 56, jewel: true, adj: [0, 1, 2, 3, 5, 6, 7] },
+  { id: 5, name: "Brooklyn",        value: 3, revenue: 2, slots: 4, bx: 16, by: 80, adj: [3, 4, 6] },
+  { id: 6, name: "Little Italy",    value: 2, revenue: 1, slots: 3, bx: 45, by: 85, adj: [4, 5, 7] },
+  { id: 7, name: "Lower East Side", value: 2, revenue: 1, slots: 3, bx: 72, by: 75, adj: [2, 4, 6] },
 ];
-function computeAdjacency() {
-  for (const d of DISTRICTS) {
-    d.adj = DISTRICTS.filter(o => o.id !== d.id &&
-      ((o.col === d.col && Math.abs(o.row - d.row) === 1) ||
-       (o.row === d.row && Math.abs(o.col - d.col) === 1))
-    ).map(o => o.id);
-  }
-}
-computeAdjacency();
 
 // m(code,name,role,inf,icon,power,desc) — fabrique un membre
 function m(code, name, role, inf, icon, power, desc) {
