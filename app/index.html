@@ -20,6 +20,7 @@
       <h1 class="logo">CONCRETE<br><span>JUNGLE</span></h1>
       <p class="tagline">New York. Huit clans. Une seule ville.</p>
       <button class="btn-main" data-action="goto-setup">Nouvelle partie</button>
+      <button class="btn-rules" data-action="rules">📖 Règles du jeu</button>
       <p class="hint">Ajoute à l'écran d'accueil pour jouer comme une app · 1–6 joueurs · 30–60 min</p>
     </div>
   </section>
@@ -80,9 +81,11 @@
   <script src="js/game.js"></script>
   <script src="js/ui.js"></script>
   <script>
+    // En développement : on désactive tout cache pour toujours avoir la dernière version.
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+      navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister())).catch(()=>{});
     }
+    if (window.caches) { caches.keys().then(ks => ks.forEach(k => caches.delete(k))).catch(()=>{}); }
   </script>
 </body>
 </html>

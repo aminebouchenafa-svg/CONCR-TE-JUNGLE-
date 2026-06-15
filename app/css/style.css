@@ -109,7 +109,7 @@ body { display: flex; flex-direction: column; }
 }
 /* on joue directement sur l'image du plateau */
 .board-art {
-  position: relative; width: 100%; max-width: 860px; aspect-ratio: 1408 / 768;
+  position: relative; width: min(98vw, 1200px); aspect-ratio: 1408 / 768;
   background: url("../assets/board.jpg") center/contain no-repeat; margin: auto;
 }
 .zone {
@@ -264,9 +264,13 @@ body { display: flex; flex-direction: column; }
 /* ---------- PAGE QUARTIER ---------- */
 #screen-district { background: #0b0b0d; }
 .district-art {
-  position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 36vh; overflow: hidden;
+  position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 30vh; overflow: hidden;
   background: linear-gradient(135deg, #1a1a22, #0b0b0d); flex: none;
 }
+/* cartes compactes sur la page quartier : pouvoir toujours visible sans scroller */
+#district-hand .card { width: 150px; }
+#district-hand .card .c-media { height: 94px; }
+#district-hand .card .c-pow { font-size: 10.5px; }
 .district-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .district-art-overlay {
   position: absolute; left: 0; right: 0; bottom: 0; padding: 30px 14px 10px;
@@ -288,9 +292,25 @@ body { display: flex; flex-direction: column; }
 #district-actions { flex-wrap: wrap; }
 
 @media (min-width: 768px) {
-  .map-label .ml-name { font-size: 16px; }
-  .map-label .ml-meta { font-size: 13px; }
-  .map-label .ml-meta img { width: 22px; height: 22px; }
-  .district-art { max-height: 42vh; }
+  .map-label .ml-name { font-size: 21px; }
+  .map-label .ml-meta { font-size: 15px; }
+  .map-label .ml-meta img { width: 26px; height: 26px; }
+  .district-art { max-height: 32vh; }
   .district-art-overlay span { font-size: 30px; }
+  #district-hand .card { width: 168px; }
+  #district-hand .card .c-media { height: 104px; }
 }
+
+/* ---------- Bouton Règles & contenu ---------- */
+.btn-rules {
+  display: block; width: 100%; max-width: 360px; margin: 8px auto 0;
+  padding: 13px; font-size: 15px; font-weight: 700; cursor: pointer;
+  background: transparent; color: var(--accent);
+  border: 1px solid var(--accent); border-radius: 14px;
+}
+.hud-rules {
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--txt);
+  border-radius: 8px; padding: 4px 9px; font-size: 15px; cursor: pointer;
+}
+.rules p { font-size: 14px; line-height: 1.55; margin: 0 0 11px; color: var(--txt); }
+.rules b { color: var(--accent); }

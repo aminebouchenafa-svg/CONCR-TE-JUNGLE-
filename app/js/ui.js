@@ -21,7 +21,21 @@
     if (a.dataset.action === "goto-setup") { buildSetup(); show("screen-setup"); }
     if (a.dataset.action === "goto-title") { show("screen-title"); }
     if (a.dataset.action === "start-game") { startGame(); }
+    if (a.dataset.action === "rules") { showRules(); }
   });
+
+  function showRules() {
+    const html = `<div class="rules">
+      <p><b>🎯 But.</b> Avoir le plus de <b>Réputation (PR)</b> après <b>4 manches</b> → maître de New York.</p>
+      <p><b>🔄 Ton tour.</b> Touche un <b>quartier</b>, puis <b>déploie 1 membre</b> (son pouvoir s'active), ou appuie sur <b>Passer</b>. On tourne jusqu'à ce que tout le monde ait passé.</p>
+      <p><b>⭐ Influence.</b> Le clan qui en a le plus dans un quartier le <b>contrôle</b>. Ton <b>chef</b> donne +1 influence à tes pions de son quartier.</p>
+      <p><b>🚨 Fin de manche.</b> 1) <b>Police</b> : un quartier à <b>🔥 3+</b> subit une rafle (le clan le plus présent y perd un pion, qui revient la manche suivante). 2) <b>Contrôle</b> : le clan dominant gagne les <b>PR + 💵</b> du quartier (égalité = personne ne marque).</p>
+      <p><b>💵 Argent.</b> Sert aux pouvoirs et au score final (3 💵 = 1 PR). <b>🔥 Chaleur.</b> Les meurtres la font monter → attire la police.</p>
+      <p><b>🏆 Fin (après la 4ᵉ manche).</b> +2 PR pour qui tient <b>Manhattan</b>, +1 PR par 3 💵, le plus de PR gagne.</p>
+      <p><b>🥊 Coups bas.</b> Selon les pouvoirs : éliminer un rival, déplacer un pion, intimider, voler de l'argent, protéger un quartier, éviter une rafle…</p>
+    </div>`;
+    openOverlay("📖 Règles du jeu", html, "Fermer", closeOverlay);
+  }
 
   // ---------- CONFIGURATION ----------
   function buildSetup() {
@@ -164,10 +178,12 @@
     $("#game-hud").innerHTML = `
       <div class="turn"><span class="pdot" style="background:${pl.color}"></span>${pl.name}${pl.isAI ? " 🤖" : ""}</div>
       <span class="round-chip">Manche ${state.round}/${D.CONFIG.rounds}</span>
+      <button id="hud-rules" class="hud-rules">📖</button>
       <div class="meta" style="flex-basis:100%;justify-content:space-between">
         <span>💵 <b>${pl.money}</b> · 🃏 <b>${pl.reserve.length}</b></span>
         <span>${mini}</span>
       </div>`;
+    const rb = $("#hud-rules"); if (rb) rb.onclick = showRules;
   }
 
   // ---------- CARTE (plateau) ----------
